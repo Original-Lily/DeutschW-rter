@@ -26,8 +26,8 @@
 
 <ol>
     <li>Clone this repository:</li>
-    <pre><code>git clone https://github.com/your-username/DeutschWoerter.git 
-     cd DeutschWoerter</code></pre>
+    <pre><code>git clone https://github.com/your-username/DeutschWoerter.git</code></pre>
+    <pre><code>cd DeutschWoerter</code></pre>
  
 <li>Compile the C++ program:</li>
 <pre><code>g++ main.cpp -o DeutschWoerter</code></pre>
