@@ -1,11 +1,12 @@
+# HOWTO USE: [python GermGetAnswerIDfromID.py 1] will output the answer_id accompanying the question_id given
 import paramiko
 import sys
 
-def execute_mysql_command(answer_id):
+def execute_mysql_command(question_id):
     # SSH Configuration
     ssh_key_path = "GermDatabaseKey.pem"
     ssh_username = "ubuntu"
-    ssh_host = "ec2-51-20-251-137.eu-north-1.compute.amazonaws.com"
+    ssh_host = "ec2-16-171-225-242.eu-north-1.compute.amazonaws.com"
 
     # MySQL Configuration
     mysql_container_name = "mysql"
@@ -13,7 +14,7 @@ def execute_mysql_command(answer_id):
     mysql_password = "my-secret-pw"  # Enter your MySQL password
 
     # MySQL Commands
-    mysql_commands = f"USE GermWords; SELECT answer_text FROM Answers WHERE answer_id = {answer_id};"
+    mysql_commands = f"USE GermWords; SELECT answer_id FROM Questions WHERE question_id = {question_id};"
 
     # Establish SSH connection
     try:
@@ -33,7 +34,7 @@ def execute_mysql_command(answer_id):
         
         # Skip the first line (column name) and print the result from the "answer_text" field
         if len(output_lines) > 1:
-            #print(f"Output for answer_id {answer_id}:")
+            #print(f"Output for question_id {question_id}:")
             print(output_lines[1])
 
     except Exception as e:
@@ -46,7 +47,7 @@ def execute_mysql_command(answer_id):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python GermGetter.py <answer_id>")
+        print("Usage: python GermGetQuestionText.py <question_id>")
     else:
-        answer_id = int(sys.argv[1])
-        execute_mysql_command(answer_id)
+        question_id = int(sys.argv[1])
+        execute_mysql_command(question_id)

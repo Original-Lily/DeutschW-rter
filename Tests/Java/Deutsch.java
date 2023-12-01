@@ -1,108 +1,161 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Deutsch {
     public static void main(String[] args) {
-        // Create and show the initial window
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
+        SwingUtilities.invokeLater(() -> createAndShowGUI(args));
     }
 
-    private static void createAndShowGUI() {
-        // Create the main frame
-        JFrame frame = new JFrame("Execute Python Script GUI");
+    private static void createAndShowGUI(String[] args) {
+        JFrame frame = new JFrame("Python Script Executor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
+        frame.setSize(400, 200);
 
-        // Create components
-        JLabel label = new JLabel("Enter some text:");
-        JTextField textField = new JTextField(15);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 1, 10, 10)); // Rows, columns, horizontal gap, vertical gap
+
+        // Initial label text
+        JLabel label = new JLabel(" ");
+        JTextField inputTextField = new JTextField();
         JButton submitButton = new JButton("Submit");
 
-        // Add action listener to the submit button
-        submitButton.addActionListener(new ActionListener() {
+        // Add a WindowListener to capture the window open event
+        frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get the text from the input box
-                String inputText = textField.getText();
-
-                // Execute the Python script and open a new window with the script's output
-                openNewWindow(execPythonScript(inputText));
+            public void windowOpened(WindowEvent e) {
+                // Goal 1: Update label text with the result of running the Python script on window open
+                if (args.length > 0) {
+                    String result = execPythonQuestionScript(args[0]);
+                    label.setText(result);
+                }
             }
         });
 
-        // Set layout
-        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+        submitButton.addActionListener(e -> {
+            // Goal 1: Update label text with the result of running the Python question script
+            String inputText = inputTextField.getText();
+            String result = execPythonQuestionScript(inputText);
+            label.setText(result);
 
-        // Add components to the frame
-        frame.add(label);
-        frame.add(textField);
-        frame.add(submitButton);
+            // Goal 2: Open new window with the result of running the Python answer script
+            openNewWindow(execPythonAnswerScript(getAnswerIDFromID(inputText)));
+        });
 
-        // Center the frame on the screen
+        panel.add(label);
+        panel.add(inputTextField);
+        panel.add(submitButton);
+
+        frame.setLayout(new BorderLayout());
+        frame.add(panel, BorderLayout.CENTER);
+
         frame.setLocationRelativeTo(null);
-
-        // Make the frame visible
         frame.setVisible(true);
     }
 
-    private static String execPythonScript(String inputText) {
+    // Goal 1: Execute Python script to get question text
+    private static String execPythonQuestionScript(String inputText) {
         try {
-            // Command to run the Python script with the input text
-            String command = "python Deutsch.py 1" + inputText;
-
-            // Create process builder
+            String command = "python GermGetQuestionText.py " + inputText;
             ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
             processBuilder.redirectErrorStream(true);
 
-            // Start the process
             Process process = processBuilder.start();
-
-            // Read the output of the Python script
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
             String line;
+
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
 
-            // Wait for the process to complete
             int exitCode = process.waitFor();
 
             if (exitCode == 0) {
                 return output.toString();
             } else {
-                return "Error executing Python script. Check your script and try again.";
+                return "Error executing Python question script. Check your script and try again.";
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-            return "Error executing Python script. Check your script and try again.";
+            return "Error executing Python question script. Check your script and try again.";
+        }
+    }
+
+    // Goal 2: Execute Python script to get answer text
+    private static String execPythonAnswerScript(String answerID) {
+        try {
+            String command = "python GermGetAnswerText.py " + answerID;
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                return output.toString();
+            } else {
+                return "Error executing Python answer script. Check your script and try again.";
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return "Error executing Python answer script. Check your script and try again.";
+        }
+    }
+
+    // Helper function to get answer ID from input ID
+    private static String getAnswerIDFromID(String inputText) {
+        try {
+            String command = "python GermGetAnswerIDfromID.py " + inputText;
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
+            processBuilder.redirectErrorStream(true);
+
+            Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                return output.toString().trim(); // Trim any leading or trailing whitespace
+            } else {
+                return "Error getting answer ID. Check your script and try again.";
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return "Error getting answer ID. Check your script and try again.";
         }
     }
 
     private static void openNewWindow(String scriptOutput) {
-        // Create the new window
         JFrame newFrame = new JFrame("Script Output");
         newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        newFrame.setSize(400, 200);
+        newFrame.setSize(600, 300);
 
-        // Create components for the new window
         JTextArea textArea = new JTextArea(scriptOutput);
         JScrollPane scrollPane = new JScrollPane(textArea);
 
-        // Set layout for the new window
-        newFrame.setLayout(new BoxLayout(newFrame.getContentPane(), BoxLayout.Y_AXIS));
+        newFrame.setLayout(new BorderLayout());
+        newFrame.add(scrollPane, BorderLayout.CENTER);
 
-        // Add components to the new window
-        newFrame.add(scrollPane);
-
-        // Center the new window on the screen
         newFrame.setLocationRelativeTo(null);
-
-        // Make the new window visible
         newFrame.setVisible(true);
     }
 }

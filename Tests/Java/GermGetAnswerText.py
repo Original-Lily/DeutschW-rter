@@ -1,3 +1,4 @@
+# HOWTO USE: [python GermGetAnswerText.py 1] will output the answer_text accompanying the value given, [bitte]
 import paramiko
 import sys
 
@@ -5,7 +6,7 @@ def execute_mysql_command(answer_id):
     # SSH Configuration
     ssh_key_path = "GermDatabaseKey.pem"
     ssh_username = "ubuntu"
-    ssh_host = "ec2-51-20-251-137.eu-north-1.compute.amazonaws.com"
+    ssh_host = "ec2-16-171-225-242.eu-north-1.compute.amazonaws.com"
 
     # MySQL Configuration
     mysql_container_name = "mysql"
@@ -46,7 +47,7 @@ def execute_mysql_command(answer_id):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python GermGetter.py <answer_id>")
+        print("Usage: python GermGetAnswerText.py <answer_id>")
     else:
         answer_id = int(sys.argv[1])
         execute_mysql_command(answer_id)

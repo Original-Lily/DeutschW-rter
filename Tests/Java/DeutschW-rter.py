@@ -8,9 +8,18 @@ def main(selectedKey):
     compile_command = f'javac {java_program}.java'
     subprocess.run(compile_command, shell=True, check=True)
 
-    # Run the compiled Java program
-    run_command = f'java {java_program}'
+    # Run the compiled Java program with selectedKey as a command-line argument
+    run_command = f'java {java_program} {selectedKey}'
     subprocess.run(run_command, shell=True, check=True)
 
+pythonCountCommand = 'python GermGetQuestionCount.py 1'
+QuestionCountProcess = subprocess.run(pythonCountCommand, shell=True, check=True, stdout=subprocess.PIPE)
 
-selectedKey = random.randint(1,3)
+# Extract numeric part from the output
+QuestionCount = ''.join(c for c in QuestionCountProcess.stdout.decode().strip() if c.isdigit())
+
+try:
+    selectedKey = random.randint(1, int(QuestionCount))
+    main(selectedKey)
+except ValueError:
+    print(f"Error: Unable to convert '{QuestionCount}' to an integer.")
