@@ -6,7 +6,7 @@ def execute_mysql_command(question_id):
     # SSH Configuration
     ssh_key_path = "GermDatabaseKey.pem"
     ssh_username = "ubuntu"
-    ssh_host = "ec2-16-171-225-242.eu-north-1.compute.amazonaws.com"
+    ssh_host = "ec2-51-20-127-220.eu-north-1.compute.amazonaws.com"
 
     # MySQL Configuration
     mysql_container_name = "mysql"

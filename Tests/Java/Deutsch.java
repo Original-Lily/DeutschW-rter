@@ -43,7 +43,7 @@ public class Deutsch {
             label.setText(result);
 
             // Goal 2: Open new window with the result of running the Python answer script
-            openNewWindow(execPythonAnswerScript(getAnswerIDFromID(inputText)));
+            openNewWindow(execPythonAnswerScript(getAnswerIDFromID(Integer.parseInt(args[0]))));
         });
 
         panel.add(label);
@@ -87,38 +87,42 @@ public class Deutsch {
     }
 
     // Goal 2: Execute Python script to get answer text
-    private static String execPythonAnswerScript(String answerID) {
-        try {
-            String command = "python GermGetAnswerText.py " + answerID;
-            ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
-            processBuilder.redirectErrorStream(true);
+private static String execPythonAnswerScript(String answerID) {
+    try {
+        // Print the input before executing the Python script
+        System.out.println("Input to GermGetAnswerText.py: " + answerID);
 
-            Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
-            String line;
+        String command = "python GermGetAnswerText.py " + answerID;
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
+        processBuilder.redirectErrorStream(true);
 
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
+        Process process = processBuilder.start();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        StringBuilder output = new StringBuilder();
+        String line;
 
-            int exitCode = process.waitFor();
-
-            if (exitCode == 0) {
-                return output.toString();
-            } else {
-                return "Error executing Python answer script. Check your script and try again.";
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return "Error executing Python answer script. Check your script and try again.";
+        while ((line = reader.readLine()) != null) {
+            output.append(line).append("\n");
         }
+
+        int exitCode = process.waitFor();
+
+        if (exitCode == 0) {
+            return output.toString();
+        } else {
+            return ("Error executing Python answer script. Check your script and try again. The answerID inputted was: " + answerID);
+        }
+    } catch (IOException | InterruptedException e) {
+        e.printStackTrace();
+        return "Error executing Python answer script. Check your script and try again.";
     }
+}
+
 
     // Helper function to get answer ID from input ID
-    private static String getAnswerIDFromID(String inputText) {
+    private static String getAnswerIDFromID(int inputID) {
         try {
-            String command = "python GermGetAnswerIDfromID.py " + inputText;
+            String command = "python GetAnswerIDfromID.py " + inputID;
             ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
             processBuilder.redirectErrorStream(true);
 
@@ -136,7 +140,7 @@ public class Deutsch {
             if (exitCode == 0) {
                 return output.toString().trim(); // Trim any leading or trailing whitespace
             } else {
-                return "Error getting answer ID. Check your script and try again.";
+                return ("Error getting answer ID. Check your script and try again. The inputID you entered is: " + inputID);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
