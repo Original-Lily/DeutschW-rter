@@ -27,7 +27,7 @@
 <ol>
     <li>Clone this repository:</li>
     <pre><code>git clone https://github.com/Original-lily/DeutschW-rter.git</code></pre>
-    <pre><code>cd DeutschWoerter</code></pre>
+    <pre><code>cd DeutschW-rter</code></pre>
  
 <li>Compile the C++ program:</li>
 <pre><code>g++ main.cpp -o DeutschW-rter</code></pre>
