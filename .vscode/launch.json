@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/buddi/Documents/GitHub/DeutschW-rter/Tests",
-      "program": "c:/Users/buddi/Documents/GitHub/DeutschW-rter/Tests/build/Debug/outDebug",
+      "cwd": "c:/Users/buddi/Documents/GitHub/DeutschW-rter/Tests/Java",
+      "program": "c:/Users/buddi/Documents/GitHub/DeutschW-rter/Tests/Java/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
