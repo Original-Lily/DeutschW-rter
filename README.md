@@ -1,5 +1,5 @@
 <h1>DeutschW-rter</h1>
-
+<h3>Note: This is still a work in progress</h3>
 <h2>Overview</h2>
 
 <p>The DeutschW-rter is a unique program that combines the power of Java & Python to facilitate comfortable and effective German language learning. This program leverages a combination of interactive pop-ups on your screen and a sophisticated AWS system in order to provide a seamless learning experience.</p>
